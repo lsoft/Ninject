@@ -18,6 +18,19 @@ To compile it in Visual Studio Code please
 2) open folder ninject/src in VS Code
 3) press Ctrl+` to open terminal
 4) execute
+
 dotnet build Ninject
+
 dotnet build Ninject.Test
+
 dotnet test .\Ninject.Test\Ninject.Test.csproj
+
+
+
+## License
+Ninject is intended to be used in both open-source and commercial environments. To allow its use in as many
+situations as possible, Ninject is dual-licensed. You may choose to use Ninject under either the Apache License,
+Version 2.0, or the Microsoft Public License (Ms-PL). These licenses are essentially identical, but you are
+encouraged to evaluate both to determine which best fits your intended use.
+
+Refer to [LICENSE.txt](https://github.com/ninject/ninject/blob/master/LICENSE.txt) for detailed information.
