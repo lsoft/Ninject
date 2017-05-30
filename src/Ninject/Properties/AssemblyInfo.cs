@@ -13,9 +13,13 @@ using System.Runtime.CompilerServices;
 using System.Security;
 #endregion
 
-[assembly: AssemblyTitle("Ninject Core Library")]
+#if !CORECLR
+
+//[assembly: AssemblyTitle("Ninject Core Library")]
 
 #if !NO_PARTIAL_TRUST
 [assembly: AllowPartiallyTrustedCallers]
 #endif
-[assembly: AssemblyDescriptionAttribute("IoC container")]
+//[assembly: AssemblyDescriptionAttribute("IoC container")]
+
+#endif

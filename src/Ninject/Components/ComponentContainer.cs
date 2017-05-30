@@ -156,7 +156,7 @@ namespace Ninject.Components
             if (component == typeof(IKernel))
                 return Kernel;
 
-            if (component.IsGenericType)
+            if (component.IsGenericType())
             {
                 Type gtd = component.GetGenericTypeDefinition();
                 Type argument = component.GetGenericArguments()[0];
@@ -167,8 +167,14 @@ namespace Ninject.Components
                 if (gtd.IsInterface && discreteGenericType.IsAssignableFrom(component))
                     return GetAll(argument).CastSlow(argument);
 #else
-                if (gtd.IsInterface && typeof (IEnumerable<>).IsAssignableFrom(gtd))
-                    return GetAll(argument).CastSlow(argument);
+                if (gtd.IsInterface())
+                {
+                    if (typeof (IEnumerable<>).IsAssignableFrom(gtd))
+                    {
+                        return
+                            GetAll(argument).CastSlow(argument);
+                    }
+                }
 #endif
             }
             Type implementation = _mappings[component].FirstOrDefault();

@@ -41,5 +41,6 @@ namespace Ninject.Modules
         /// <returns>All assembly names of the assemblies in the given files that match the filter.</returns>
         IEnumerable<AssemblyName> GetAssemblyNames(IEnumerable<string> filenames, Predicate<Assembly> filter);
     }
+
 }
 #endif

@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using Ninject.Components;
 using Ninject.Infrastructure;
+using System.Reflection;
 #endregion
 
 namespace Ninject.Modules
@@ -76,8 +77,14 @@ namespace Ninject.Modules
 
         private static IEnumerable<string> GetBaseDirectories()
         {
+#if !CORECLR
             var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             var searchPath = AppDomain.CurrentDomain.RelativeSearchPath;
+#else
+            var modulePath = typeof(ModuleLoader).GetTypeInfo().Assembly.ManifestModule.FullyQualifiedName;
+            var baseDirectory = Path.GetDirectoryName(modulePath);
+            var searchPath = string.Empty;
+#endif
 
             return String.IsNullOrEmpty(searchPath) 
                 ? new[] {baseDirectory} 

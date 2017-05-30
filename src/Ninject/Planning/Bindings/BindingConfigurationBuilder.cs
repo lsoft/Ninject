@@ -33,6 +33,7 @@ namespace Ninject.Planning.Bindings
     using Ninject.Parameters;
     using Ninject.Planning.Targets;
     using Ninject.Syntax;
+    using System.Reflection;
 
     /// <summary>
     /// Provides a root for the fluent syntax associated with an <see cref="BindingConfiguration"/>.
@@ -100,28 +101,28 @@ namespace Ninject.Planning.Bindings
         /// <returns>The fluent syntax.</returns>
         public IBindingInNamedWithOrOnSyntax<T> WhenInjectedInto(Type parent)
         {
-            if (parent.IsGenericTypeDefinition)
+            if (parent.IsGenericTypeDefinition())
             {
-                if (parent.IsInterface)
+                if (parent.IsInterface())
                 {
                     this.BindingConfiguration.Condition = r =>
                         r.Target != null &&
-                        r.Target.Member.ReflectedType.GetInterfaces().Any(i => 
-                            i.IsGenericType &&
+                        r.Target.Member.ReflectedType().GetInterfaces().Any(i => 
+                            i.IsGenericType() &&
                             i.GetGenericTypeDefinition() == parent);
                 }
                 else
                 {
                     this.BindingConfiguration.Condition = r => 
                         r.Target != null &&
-                        r.Target.Member.ReflectedType.GetAllBaseTypes().Any(i =>
-                            i.IsGenericType &&
+                        r.Target.Member.ReflectedType().GetAllBaseTypes().Any(i =>
+                            i.IsGenericType() &&
                             i.GetGenericTypeDefinition() == parent);
                 }
             }
             else
             {
-                this.BindingConfiguration.Condition = r => r.Target != null && parent.IsAssignableFrom(r.Target.Member.ReflectedType);
+                this.BindingConfiguration.Condition = r => r.Target != null && parent.IsAssignableFrom(r.Target.Member.ReflectedType());
             }
 
             return this;
@@ -140,28 +141,28 @@ namespace Ninject.Planning.Bindings
                 foreach (var parent in parents)
                 {
                     bool matches = false;
-                    if (parent.IsGenericTypeDefinition)
+                    if (parent.IsGenericTypeDefinition())
                     {
-                        if (parent.IsInterface)
+                        if (parent.IsInterface())
                         {
                             matches =
                                 r.Target != null &&
-                                r.Target.Member.ReflectedType.GetInterfaces().Any(i =>
-                                    i.IsGenericType &&
+                                r.Target.Member.ReflectedType().GetInterfaces().Any(i =>
+                                    i.IsGenericType() &&
                                     i.GetGenericTypeDefinition() == parent);
                         }
                         else
                         {
                             matches =
                                 r.Target != null &&
-                                r.Target.Member.ReflectedType.GetAllBaseTypes().Any(i =>
-                                    i.IsGenericType &&
+                                r.Target.Member.ReflectedType().GetAllBaseTypes().Any(i =>
+                                    i.IsGenericType() &&
                                     i.GetGenericTypeDefinition() == parent);
                         }
                     }
                     else
                     {
-                        matches = r.Target != null && parent.IsAssignableFrom(r.Target.Member.ReflectedType);
+                        matches = r.Target != null && parent.IsAssignableFrom(r.Target.Member.ReflectedType());
                     }
 
                     if (matches) return true;
@@ -194,16 +195,16 @@ namespace Ninject.Planning.Bindings
         /// <returns>The fluent syntax.</returns>
         public IBindingInNamedWithOrOnSyntax<T> WhenInjectedExactlyInto(Type parent)
         {
-            if (parent.IsGenericTypeDefinition)
+            if (parent.IsGenericTypeDefinition())
             {
                 this.BindingConfiguration.Condition = r =>
                     r.Target != null &&
-                    r.Target.Member.ReflectedType.IsGenericType &&
-                    parent == r.Target.Member.ReflectedType.GetGenericTypeDefinition();
+                    r.Target.Member.ReflectedType().IsGenericType() &&
+                    parent == r.Target.Member.ReflectedType().GetGenericTypeDefinition();
             }
             else
             {
-                this.BindingConfiguration.Condition = r => r.Target != null && r.Target.Member.ReflectedType == parent;
+                this.BindingConfiguration.Condition = r => r.Target != null && r.Target.Member.ReflectedType() == parent;
             }
             return this;
         }
@@ -222,16 +223,16 @@ namespace Ninject.Planning.Bindings
                 foreach (var parent in parents)
                 {
                     bool matches = false;
-                    if (parent.IsGenericTypeDefinition)
+                    if (parent.IsGenericTypeDefinition())
                     {
                         matches =
                             r.Target != null &&
-                            r.Target.Member.ReflectedType.IsGenericType &&
-                            parent == r.Target.Member.ReflectedType.GetGenericTypeDefinition();
+                            r.Target.Member.ReflectedType().IsGenericType() &&
+                            parent == r.Target.Member.ReflectedType().GetGenericTypeDefinition();
                     }
                     else
                     {
-                        matches = r.Target != null && r.Target.Member.ReflectedType == parent;
+                        matches = r.Target != null && r.Target.Member.ReflectedType() == parent;
                     }
 
                     if(matches) return true;
@@ -289,7 +290,7 @@ namespace Ninject.Planning.Bindings
                 throw new InvalidOperationException(ExceptionFormatter.InvalidAttributeTypeUsedInBindingCondition(this.serviceNames, "WhenClassHas", attributeType));
             }
 
-            this.BindingConfiguration.Condition = r => r.Target != null && r.Target.Member.ReflectedType.HasAttribute(attributeType);
+            this.BindingConfiguration.Condition = r => r.Target != null && r.Target.Member.ReflectedType().HasAttribute(attributeType);
 
             return this;
         }
@@ -338,7 +339,9 @@ namespace Ninject.Planning.Bindings
         /// <returns>The fluent syntax.</returns>
         public IBindingInNamedWithOrOnSyntax<T> WhenParentNamed(string name)
         {
+#if !CORECLR
             String.Intern(name);
+#endif
             this.BindingConfiguration.Condition = r => r.ParentContext != null && string.Equals(r.ParentContext.Binding.Metadata.Name, name, StringComparison.Ordinal);
             return this;
         }
@@ -404,7 +407,9 @@ namespace Ninject.Planning.Bindings
         /// <returns>The fluent syntax.</returns>
         public IBindingWithOrOnSyntax<T> Named(string name)
         {
+#if !CORECLR
             string.Intern(name);
+#endif
             this.BindingConfiguration.Metadata.Name = name;
             return this;
         }

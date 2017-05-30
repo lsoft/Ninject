@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Ninject.Activation.Caching;
 using Ninject.Infrastructure;
 using Ninject.Infrastructure.Introspection;
@@ -105,7 +106,7 @@ namespace Ninject.Activation
             Planner = planner;
             Pipeline = pipeline;
 
-            if (binding.Service.IsGenericTypeDefinition)
+            if (binding.Service.IsGenericTypeDefinition())
             {
                 HasInferredGenericArguments = true;
                 GenericArguments = request.Service.GetGenericArguments();

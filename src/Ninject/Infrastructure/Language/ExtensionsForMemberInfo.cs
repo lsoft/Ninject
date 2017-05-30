@@ -37,7 +37,7 @@ namespace Ninject.Infrastructure.Language
             {
                 if (parentDefinitionMethodInfo == null)
                 {
-                    var runtimeAssemblyInfoType = typeof(MethodInfo).Assembly.GetType("System.Reflection.RuntimeMethodInfo");
+                    var runtimeAssemblyInfoType = typeof(MethodInfo).Assembly().GetType("System.Reflection.RuntimeMethodInfo");
                     parentDefinitionMethodInfo = runtimeAssemblyInfoType.GetMethod("GetParentDefinition", Flags);
                 }
 
@@ -100,6 +100,14 @@ namespace Ninject.Infrastructure.Language
             PropertyInfo propertyDefinition,
             BindingFlags flags)
         {
+#if CORECLR
+            return memberInfo.DeclaringType.GetRuntimeProperties().FirstOrDefault(
+                p => p.Name == propertyDefinition.Name &&
+                    !p.GetMethod.IsStatic &&
+                     p.PropertyType == propertyDefinition.PropertyType &&
+                     p.GetIndexParameters().Select(pi => pi.ParameterType).SequenceEqual(
+                         propertyDefinition.GetIndexParameters().Select(pi => pi.ParameterType)));
+#else
             return memberInfo.DeclaringType.GetProperty(
                 propertyDefinition.Name,
                 flags,
@@ -107,6 +115,7 @@ namespace Ninject.Infrastructure.Language
                 propertyDefinition.PropertyType,
                 propertyDefinition.GetIndexParameters().Select(parameter => parameter.ParameterType).ToArray(),
                 null);
+#endif
         }
 
         /// <summary>
@@ -133,7 +142,7 @@ namespace Ninject.Infrastructure.Language
         /// <returns></returns>
         public static object[] GetCustomAttributesExtended(this MemberInfo member, Type attributeType, bool inherited)
         {
-#if !NET_35 && !MONO_40
+#if !NET_35 && !MONO_40 && !CORECLR
             return Attribute.GetCustomAttributes(member, attributeType, inherited);
 #else
             var propertyInfo = member as PropertyInfo;
@@ -142,7 +151,7 @@ namespace Ninject.Infrastructure.Language
                 return GetCustomAttributes(propertyInfo, attributeType, inherited);
             }
 
-            return member.GetCustomAttributes(attributeType, inherited);
+            return member.GetCustomAttributes(attributeType, inherited).ToArray();
 #endif
         }
 
@@ -180,7 +189,11 @@ namespace Ninject.Infrastructure.Language
                 return null;
             }
 
+#if !CORECLR
             return (MethodInfo)ParentDefinitionMethodInfo.Invoke(method, flags, null, null, CultureInfo.InvariantCulture);
+#else
+            return (MethodInfo)ParentDefinitionMethodInfo.Invoke(method, null);
+#endif
 #endif
         }
 
@@ -225,7 +238,7 @@ namespace Ninject.Infrastructure.Language
                          info != null;
                          info = GetParentDefinition(info))
                     {
-                        object[] customAttributes = info.GetCustomAttributes(attributeType, false);
+                        object[] customAttributes = info.GetCustomAttributes(attributeType, false).ToArray();
                         AddAttributes(attributes, customAttributes, attributeUsages);
                     }
 
@@ -235,7 +248,7 @@ namespace Ninject.Infrastructure.Language
                 }
             }
 
-            return propertyInfo.GetCustomAttributes(attributeType, inherit);
+            return propertyInfo.GetCustomAttributes(attributeType, inherit).ToArray();
         }
 
         private static void AddAttributes(List<object> attributes, object[] customAttributes, Dictionary<Type, bool> attributeUsages)
@@ -257,8 +270,13 @@ namespace Ninject.Infrastructure.Language
 
         private static AttributeUsageAttribute InternalGetAttributeUsage(Type type)
         {
+#if !CORECLR
             object[] customAttributes = type.GetCustomAttributes(typeof(AttributeUsageAttribute), true);
             return (AttributeUsageAttribute)customAttributes[0];
+#else
+            AttributeUsageAttribute customAttribute = type.GetTypeInfo().GetCustomAttribute<AttributeUsageAttribute>(true);
+            return customAttribute;
+#endif
         } 
     }
 }

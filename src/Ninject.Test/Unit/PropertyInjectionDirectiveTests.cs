@@ -2,6 +2,7 @@
 using Ninject.Injection;
 using Ninject.Planning.Directives;
 using Xunit;
+using System.Reflection;
 
 namespace Ninject.Tests.Unit.PropertyInjectionDirectiveTests
 {

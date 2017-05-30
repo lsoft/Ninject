@@ -35,8 +35,8 @@ namespace Ninject.Infrastructure.Language
         private static bool IsLoadableModule(Type type)
         {
             return typeof(INinjectModule).IsAssignableFrom(type)
-                && !type.IsAbstract
-                && !type.IsInterface
+                && !type.IsAbstract()
+                && !type.IsInterface()
                 && type.GetConstructor(Type.EmptyTypes) != null;
         }
     }

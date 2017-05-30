@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Reflection;
 #endregion
 
 namespace Ninject.Infrastructure.Language

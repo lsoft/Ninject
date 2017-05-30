@@ -19,6 +19,7 @@
 // </copyright>
 //-------------------------------------------------------------------------------
 
+#if !CORECLR
 #if !NO_ASSEMBLY_SCANNING
 namespace Ninject.Modules
 {
@@ -122,4 +123,5 @@ namespace Ninject.Modules
         }
     }
 }
+#endif
 #endif

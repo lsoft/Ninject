@@ -63,7 +63,7 @@ namespace Ninject
         {
             bool requiresCleanup = false;
             var registration = GetRegistrationForType(this.GetType());
-            registration.KernelLock.AcquireReaderLock(Timeout.Infinite);
+            registration.KernelLock.AcquireTrueReaderLock(Timeout.Infinite);
 
             try
             {
@@ -82,7 +82,7 @@ namespace Ninject
             }
             finally
             {
-                registration.KernelLock.ReleaseReaderLock();
+                registration.KernelLock.ReleaseTrueReaderLock();
             }
 
             if (requiresCleanup)
@@ -109,7 +109,7 @@ namespace Ninject
 
         private static Registration GetRegistrationForType(Type type)
         {
-            kernelRegistrationsLock.AcquireReaderLock(Timeout.Infinite);
+            kernelRegistrationsLock.AcquireUpgradableReaderLock(Timeout.Infinite);
             try
             {
                 Registration registration;
@@ -122,13 +122,13 @@ namespace Ninject
             }
             finally
             {
-                kernelRegistrationsLock.ReleaseReaderLock();
+                kernelRegistrationsLock.ReleaseUpgradableReaderLock();
             }
         }
 
         private static Registration CreateNewRegistration(Type type)
         {
-            var lockCookie = kernelRegistrationsLock.UpgradeToWriterLock(Timeout.Infinite);
+            kernelRegistrationsLock.UpgradeToWriterLock(Timeout.Infinite);
             try
             {
                 Registration registration;
@@ -143,7 +143,7 @@ namespace Ninject
             }
             finally
             {
-                kernelRegistrationsLock.DowngradeFromWriterLock(ref lockCookie);
+                kernelRegistrationsLock.DowngradeFromWriterLock();
             }
         }
 

@@ -141,7 +141,7 @@ namespace Ninject.Infrastructure.Introspection
                         throw new ArgumentOutOfRangeException();
                 }
 
-                sw.Write(" of type {0}", target.Member.ReflectedType.Format());
+                sw.Write(" of type {0}", target.Member.ReflectedType().Format());
 
                 return sw.ToString();
             }
@@ -165,7 +165,11 @@ namespace Ninject.Infrastructure.Introspection
                 return "AnonymousType";
 #endif
 
+#if !CORECLR
             switch (friendlyName.ToLower(CultureInfo.InvariantCulture))
+#else
+            switch(friendlyName.ToLowerInvariant())
+#endif
             {
                 case "int16": return "short";
                 case "int32": return "int";

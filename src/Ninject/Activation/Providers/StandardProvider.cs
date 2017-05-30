@@ -90,6 +90,7 @@ namespace Ninject.Activation.Providers
                       .GroupBy(option => this.ConstructorScorer.Score(context, option))
                       .OrderByDescending(g => g.Key)
                       .FirstOrDefault();
+
                 if (bestDirectives == null)
                 {
                     throw new ActivationException(ExceptionFormatter.NoConstructorsAvailable(context));
@@ -133,7 +134,7 @@ namespace Ninject.Activation.Providers
         public Type GetImplementationType(Type service)
         {
             Ensure.ArgumentNotNull(service, "service");
-            return Type.ContainsGenericParameters ? Type.MakeGenericType(service.GetGenericArguments()) : Type;
+            return Type.ContainsGenericParameters() ? Type.MakeGenericType(service.GetGenericArguments()) : Type;
         }
 
         /// <summary>

@@ -150,7 +150,7 @@ namespace Ninject.Planning.Targets
                 return GetValues(service, parent).CastSlow(service).ToArraySlow(service);
             }
 
-            if (Type.IsGenericType)
+            if (Type.IsGenericType())
             {
                 Type gtd = Type.GetGenericTypeDefinition();
                 Type service = Type.GetGenericArguments()[0];

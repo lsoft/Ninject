@@ -54,11 +54,11 @@ namespace Ninject.Planning.Bindings.Resolvers
         /// <returns><see langword="True"/> if the type is self-bindable; otherwise <see langword="false"/>.</returns>
         protected virtual bool TypeIsSelfBindable(Type service)
         {
-            return !service.IsInterface
-                   && !service.IsAbstract
-                   && !service.IsValueType
+            return !service.IsInterface()
+                   && !service.IsAbstract()
+                   && !service.IsValueType()
                    && service != typeof(string)
-                   && !service.ContainsGenericParameters;
+                   && !service.ContainsGenericParameters();
         }
     }
 }

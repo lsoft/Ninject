@@ -34,6 +34,7 @@ namespace Ninject.Selection.Heuristics
     using Ninject.Parameters;
     using Ninject.Planning.Directives;
     using Ninject.Planning.Targets;
+    using System.Reflection;
 
     /// <summary>
     /// Scores constructors by either looking for the existence of an injection marker
@@ -49,6 +50,8 @@ namespace Ninject.Selection.Heuristics
         /// <returns>The constructor's score.</returns>
         public virtual int Score(IContext context, ConstructorInjectionDirective directive)
         {
+            var a = directive.Constructor.ToString();
+
             Ensure.ArgumentNotNull(context, "context");
             Ensure.ArgumentNotNull(directive, "constructor");
 
@@ -115,7 +118,7 @@ namespace Ninject.Selection.Heuristics
                 targetType = targetType.GetElementType();
             }
 
-            if (targetType.IsGenericType && targetType.GetInterfaces().Any(type => type == typeof(IEnumerable)))
+            if (targetType.IsGenericType() && targetType.GetInterfaces().Any(type => type == typeof(IEnumerable)))
             {
                 targetType = targetType.GetGenericArguments()[0];
             }

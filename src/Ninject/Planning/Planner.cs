@@ -64,7 +64,7 @@ namespace Ninject.Planning
         {
             Ensure.ArgumentNotNull(type, "type");
 
-            this.plannerLock.AcquireReaderLock(Timeout.Infinite);
+            this.plannerLock.AcquireUpgradableReaderLock(Timeout.Infinite);
             try
             {
                 IPlan plan;
@@ -72,7 +72,7 @@ namespace Ninject.Planning
             }
             finally
             {
-                this.plannerLock.ReleaseReaderLock();
+                this.plannerLock.ReleaseUpgradableReaderLock();
             }
         }
 
@@ -95,7 +95,7 @@ namespace Ninject.Planning
         /// <returns>The newly created plan.</returns>
         private IPlan CreateNewPlan(Type type)
         {
-            var lockCooki = this.plannerLock.UpgradeToWriterLock(Timeout.Infinite);
+            this.plannerLock.UpgradeToWriterLock(Timeout.Infinite);
             try
             {
                 IPlan plan;
@@ -112,7 +112,7 @@ namespace Ninject.Planning
             }
             finally
             {
-                this.plannerLock.DowngradeFromWriterLock(ref lockCooki);
+                this.plannerLock.DowngradeFromWriterLock();
             }
         }
     }

@@ -45,7 +45,23 @@ namespace Ninject.Planning.Targets
         /// </summary>
         public override bool HasDefaultValue
         {
-            get { return defaultValue.Value != DBNull.Value; }
+            get
+            {
+#if CORECLR
+                var val = defaultValue.Value;
+
+                if (val != null)
+                {
+                    var name = val.GetType().FullName;
+                    if (name == "System.DBNull") // WINRT doesn't expose DBNull as a type, but it's still returned as the default
+                        return false;
+                }
+
+                return true;
+#else
+                return defaultValue.Value != DBNull.Value;
+#endif
+            }
         }
 
         /// <summary>

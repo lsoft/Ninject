@@ -96,9 +96,9 @@ namespace Ninject.Selection
 #if !SILVERLIGHT
             if (this.Settings.InjectParentPrivateProperties)
             {
-                for (Type parentType = type.BaseType; parentType != null; parentType = parentType.BaseType)
+                for (Type parentType = type.BaseType(); parentType != null; parentType = parentType.BaseType())
                 {
-                    properties.AddRange(this.GetPrivateProperties(type.BaseType));
+                    properties.AddRange(this.GetPrivateProperties(type.BaseType()));
                 }
             }
 #endif

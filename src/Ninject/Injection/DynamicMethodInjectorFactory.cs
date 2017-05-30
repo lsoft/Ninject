@@ -40,8 +40,8 @@ namespace Ninject.Injection
             EmitLoadMethodArguments(il, constructor);
             il.Emit(OpCodes.Newobj, constructor);
 
-            if (constructor.ReflectedType.IsValueType)
-                il.Emit(OpCodes.Box, constructor.ReflectedType);
+            if (constructor.ReflectedType().IsValueType())
+                il.Emit(OpCodes.Box, constructor.ReflectedType());
 
             il.Emit(OpCodes.Ret);
 
@@ -133,7 +133,7 @@ namespace Ninject.Injection
 
         private static void EmitUnboxOrCast(ILGenerator il, Type type)
         {
-            OpCode opCode = type.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass;
+            OpCode opCode = type.IsValueType() ? OpCodes.Unbox_Any : OpCodes.Castclass;
             il.Emit(opCode, type);
         }
 
