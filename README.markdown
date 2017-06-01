@@ -7,7 +7,7 @@ reuse, test, and modify.
 ...
 
 
-This fork is based on Ninject 3.2.3 and is intended for .Net Core 1. All unit tests work fine except only one.
+This fork is based on Ninject 3.2.3 and is intended for .Net Core 1. All unit tests are green except for one.
 For additonal information please refer https://github.com/ninject/Ninject.Extensions.Factory/issues/35
 
 Please note: I think it's risky to use it in a production environment.
@@ -19,12 +19,18 @@ To compile it in Visual Studio Code please
 3) press Ctrl+` to open terminal
 4) execute
 
+dotnet restore Ninject
+
+dotnet restore Ninject.Test
+
 dotnet build Ninject
 
 dotnet build Ninject.Test
 
 dotnet test .\Ninject.Test\Ninject.Test.csproj
 
+
+(for Russians: console encoding can be changed by this command: [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 )
 
 
 ## License
