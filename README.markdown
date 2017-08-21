@@ -7,7 +7,7 @@ reuse, test, and modify.
 ...
 
 
-This fork is based on Ninject 3.2.3 and is intended for .Net Core 1. All unit tests are green except for one.
+This fork is based on Ninject 3.2.3 and is intended for .Net Core 2. All unit tests are green except for one.
 For additonal information please refer https://github.com/ninject/Ninject.Extensions.Factory/issues/35
 
 Please note: I think it's risky to use it in a production environment.
@@ -27,8 +27,9 @@ dotnet build Ninject
 
 dotnet build Ninject.Test
 
-dotnet test .\Ninject.Test\Ninject.Test.csproj
+dotnet test .\Ninject.Test\Ninject.Test.csproj -c release
 
+(release testing is required because of that JIT feature: https://github.com/dotnet/coreclr/issues/12847)
 
 (for Russians: console encoding can be changed by this command: [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 )
 
