@@ -4,6 +4,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <DefineConstants>CORECLR;NO_ASSEMBLY_SCANNING;NO_EXCEPTION_SERIALIZATION;</DefineConstants>
+    <Optimize>true</Optimize>
     <!-- NO_LCG; -->
   </PropertyGroup>
 
