@@ -7,6 +7,8 @@ reuse, test, and modify.
 ...
 
 
+[This fork is OBSOLETE today: Please refer to Ninject 3.3.2 or higher]
+
 This fork is based on Ninject 3.2.3 and is intended for .Net Core 2. All unit tests are green except for one.
 For additonal information please refer https://github.com/ninject/Ninject.Extensions.Factory/issues/35
 
